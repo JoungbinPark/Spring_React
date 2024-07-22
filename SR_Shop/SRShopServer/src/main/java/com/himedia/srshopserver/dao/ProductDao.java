@@ -33,4 +33,11 @@ public class ProductDao {
 
         return list;
     }
+
+    public List<Product> getKindList(String kind) {
+        String sql = "select p from Product p where p.kind=:kind";
+        TypedQuery<Product> query = em.createQuery(sql, Product.class);
+        query.setParameter("kind", kind);
+        return query.getResultList();
+    }
 }

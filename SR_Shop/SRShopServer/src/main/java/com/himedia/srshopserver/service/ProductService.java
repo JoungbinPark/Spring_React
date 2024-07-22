@@ -24,4 +24,8 @@ public class ProductService {
     public List<Product> getNewProduct() {
         return pdao.getNewProduct();
     }
+
+    public List<Product> getListKind(String kind) {
+        return pdao.getKindList( kind );
+    }
 }

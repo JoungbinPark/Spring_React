@@ -144,4 +144,12 @@ public class MemberController {
         return result;
     }
 
+    @PostMapping("/insertMember")
+    public HashMap<String, Object> insertMember(@RequestBody Member member){
+        HashMap<String, Object> result = new HashMap<>();
+        ms.insertMember(member);
+        result.put("msg", "ok");
+        return result;
+    }
+
 }

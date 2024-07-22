@@ -36,6 +36,7 @@ dependencies {
     implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
     implementation 'com.google.code.gson:gson:2.9.0'
 
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {
