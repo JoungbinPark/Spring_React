@@ -1,6 +1,5 @@
 package com.himedia.srshopserver.entity;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Data;
@@ -16,8 +15,8 @@ public class Member {
     private String userid;
     private String pwd;
     private String name;
-    private String phone;
     private String email;
+    private String phone;
     private String zip_num;
     private String address1;
     private String address2;
@@ -27,7 +26,4 @@ public class Member {
     @ColumnDefault("Y")
     private String useyn;
     private String provider;
-
-
-
 }

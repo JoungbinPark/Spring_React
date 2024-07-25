@@ -14,8 +14,10 @@ public class ProductDao {
     @Autowired
     EntityManager em;
 
+
     public List<Product> getBestProduct() {
-        String sql = "select p from Product p where p.bestyn=:bestyn ";
+
+        String sql = "select p from Product p where p.bestyn=:bestyn";
         List<Product> list = em.createQuery(sql, Product.class)
                 .setParameter("bestyn", "Y")
                 .setFirstResult(0)
@@ -30,7 +32,6 @@ public class ProductDao {
         query.setFirstResult(0);
         query.setMaxResults(4);
         List<Product> list = query.getResultList();
-
         return list;
     }
 
@@ -39,5 +40,9 @@ public class ProductDao {
         TypedQuery<Product> query = em.createQuery(sql, Product.class);
         query.setParameter("kind", kind);
         return query.getResultList();
+    }
+
+    public Product getProduct(int pseq) {
+        return em.find(Product.class, pseq);
     }
 }

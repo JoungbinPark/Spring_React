@@ -7,14 +7,14 @@ import jakarta.persistence.Id;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 
 @Data
 @Entity
 public class Product {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int pseq;
     private String name;
     private String kind;
@@ -28,6 +28,4 @@ public class Product {
     private String useyn;
     @CreationTimestamp
     private Timestamp indate;
-
-
 }

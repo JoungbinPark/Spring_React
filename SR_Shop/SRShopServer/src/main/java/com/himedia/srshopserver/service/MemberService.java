@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 public class MemberService {
+
     @Autowired
     MemberDao mdao;
 
@@ -18,5 +19,13 @@ public class MemberService {
 
     public void insertMember(Member member) {
         mdao.insertMember(member);
+    }
+
+    public Member updateMember(Member member) {
+        return mdao.updateMember(member);
+    }
+
+    public void withdrawal(String userid) {
+        mdao.withdrawal(userid);
     }
 }

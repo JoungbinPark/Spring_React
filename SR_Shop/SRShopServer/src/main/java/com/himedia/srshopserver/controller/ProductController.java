@@ -3,10 +3,7 @@ package com.himedia.srshopserver.controller;
 import com.himedia.srshopserver.entity.Product;
 import com.himedia.srshopserver.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,23 +16,32 @@ public class ProductController {
     ProductService ps;
 
     @GetMapping("/bestPro")
-    public HashMap<String, Object> bestProduct(){
+    public HashMap<String, Object> bestProduct() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("bestProduct", ps.getBestProduct());
+        result.put("bestProduct", ps.getBestProduct() );
         return result;
     }
 
     @GetMapping("/newPro")
-    public HashMap<String, Object> newProduct(){
+    public HashMap<String, Object> newProduct() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("newProduct", ps.getNewProduct());
+        result.put("newProduct", ps.getNewProduct() );
         return result;
     }
 
     @GetMapping("/kindlist/{kind}")
-    public List<Product> kindlist(@PathVariable("kind") String kind){
+    public List<Product> kindlist(@PathVariable String kind) {
         HashMap<String, Object> result = new HashMap<>();
-        List<Product> list = ps.getListKind(kind);
+        List<Product> list = ps.getListKind( kind );
         return list;
     }
+
+    @GetMapping("/getProduct/{pseq}")
+    public HashMap<String, Object> getProduct(@PathVariable("pseq") int pseq) {
+        HashMap<String, Object> result = new HashMap<>();
+        Product product = ps.getProduct( pseq );
+        result.put("product", product);
+        return result;
+    }
+
 }

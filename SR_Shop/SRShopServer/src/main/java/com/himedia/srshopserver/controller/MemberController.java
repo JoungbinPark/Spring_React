@@ -16,6 +16,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/member")
@@ -25,14 +26,16 @@ public class MemberController {
     MemberService ms;
 
     @PostMapping("/locallogin")
-    public HashMap<String, Object> localLogin(@RequestBody Member member, HttpServletRequest request) {
-        HashMap<String, Object> result = new HashMap<>();
-        Member mem = ms.getMember(member.getUserid());
-        if(mem == null){
-            result.put("msg", "해당 아이디가 없습니다.");
-        } else if( !mem.getPwd().equals(member.getPwd())){
+    public HashMap<String , Object> localLogin(@RequestBody Member member, HttpServletRequest request ) {
+        HashMap<String , Object> result = new HashMap<>();
+        Member mem = ms.getMember( member.getUserid() );
+        if(mem == null ) {
+            result.put("msg", "해당 아이디가 없습니다");
+        }else if( !mem.getPwd().equals( member.getPwd() ) ) {
             result.put("msg", "패스워드가 틀립니다.");
-        } else{
+        }else if(mem.getUseyn().equals("N")){
+            result.put("msg", "현재 아이디가 비활성화되어 있습니다. 관리자에게 문의하세요");
+        }else {
             HttpSession session = request.getSession();
             session.setAttribute("loginUser", mem);
             result.put("msg", "ok");
@@ -44,26 +47,28 @@ public class MemberController {
     public HashMap<String, Object> getLoginUser(HttpServletRequest request) {
         HashMap<String, Object> result = new HashMap<>();
         HttpSession session = request.getSession();
-        result.put("loginUser", session.getAttribute("loginUser"));
+        result.put("loginUser" , session.getAttribute("loginUser") );
         return result;
     }
 
     @GetMapping("/logout")
-    public HashMap<String, Object> logout(HttpServletRequest request) {
+    public HashMap<String , Object> logout(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.removeAttribute("loginUser");
         return null;
     }
 
+
     @RequestMapping("/kakaostart")
-    public @ResponseBody String kakaostart(){
+    public @ResponseBody String kakaostart() {
         String a = "<script type='text/javascript'>"
                 + "location.href='https://kauth.kakao.com/oauth/authorize?"
                 + "client_id=4c345339fb66e95e889168ad69802a7b&"
                 + "redirect_uri=http://localhost:8070/api/member/kakaoLogin&"
-                + "&response_type=code';" + "</script>";
+                + "response_type=code';" + "</script>";
         return a;
     }
+
 
     @RequestMapping("/kakaoLogin")
     public void loginKakao(
@@ -120,9 +125,11 @@ public class MemberController {
         if( member == null) {
             member = new Member();
             member.setUserid( kakaoProfile.getId() );
-            member.setEmail( pf.getNickname() );
+            member.setEmail( ac.getEmail() );  // 전송된 이메일이 없으면 pf.getNickname()
             member.setName( pf.getNickname() );
             member.setProvider( "kakao" );
+            member.setPwd( "kakao" );
+            member.setUseyn("Y");
 
             ms.insertMember(member);
         }
@@ -131,12 +138,13 @@ public class MemberController {
         response.sendRedirect("http://localhost:3000/kakaosaveinfo");
     }
 
+
     @PostMapping("/idcheck")
-    public HashMap<String, Object> idcheck(@RequestParam("userid") String userid){
+    public HashMap<String, Object> idcheck( @RequestParam("userid") String userid ) {
         HashMap<String, Object> result = new HashMap<>();
         System.out.println("userid : " + userid);
         Member mem = ms.getMember(userid);
-        if( mem == null){
+        if (mem == null) {
             result.put("res", "1");
         } else {
             result.put("res", "0");
@@ -145,11 +153,27 @@ public class MemberController {
     }
 
     @PostMapping("/insertMember")
-    public HashMap<String, Object> insertMember(@RequestBody Member member){
+    public HashMap<String, Object> insertMember( @RequestBody Member member ) {
+        ms.insertMember( member );
         HashMap<String, Object> result = new HashMap<>();
-        ms.insertMember(member);
         result.put("msg", "ok");
         return result;
     }
 
+    @PostMapping("/updateMember")
+    public HashMap<String, Object> updateMember( @RequestBody Member member, HttpServletRequest request ){
+        HashMap<String, Object> result = new HashMap<>();
+        Member mem = ms.updateMember( member );
+        HttpSession session = request.getSession();
+        session.setAttribute("loginUser", mem);
+        result.put("loginUser", mem);
+        return result;
+    }
+
+    @PostMapping("withdrawal")
+    public HashMap<String, Object> withdrawal(@RequestParam("userid") String userid){
+        HashMap<String, Object> result = new HashMap<>();
+        ms.withdrawal(userid);
+        return result;
+    }
 }
