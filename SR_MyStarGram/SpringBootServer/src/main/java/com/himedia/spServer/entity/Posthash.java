@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class Post_hash {
+public class Posthash {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

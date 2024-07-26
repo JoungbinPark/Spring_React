@@ -15,7 +15,7 @@ public class Reply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int post;
+    private int postid;
     private String writer;
     private String content;
     @CreationTimestamp
