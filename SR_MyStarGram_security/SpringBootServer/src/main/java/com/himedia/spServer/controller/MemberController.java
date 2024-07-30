@@ -6,6 +6,7 @@ import com.himedia.spServer.dto.OAuthToken;
 import com.himedia.spServer.entity.Follow;
 import com.himedia.spServer.entity.Likes;
 import com.himedia.spServer.entity.Member;
+import com.himedia.spServer.security.CustomSecurityConfig;
 import com.himedia.spServer.service.MemberService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,37 +33,6 @@ public class MemberController {
 
     @Autowired
     MemberService ms;
-
-    @PostMapping("/loginlocal")
-    public HashMap<String, Object> loginLocal(@RequestBody Member member, HttpServletRequest request){
-        HashMap<String, Object> result = new HashMap<String, Object>();
-        Member mem = ms.getMember( member.getEmail());
-        if( mem == null){
-            result.put("msg", "이메일 또는 패스워드를 확인하세요.");
-        } else if ( !mem.getPwd().equals( member.getPwd())){
-            result.put("msg", "이메일 또는 패스워드를 확인하세요.");
-        } else{
-            result.put("msg", "ok");
-            HttpSession session = request.getSession();
-            session.setAttribute("loginUser", mem);
-        }
-        return result;
-    }
-
-    @GetMapping("/getLoginUser")
-    public HashMap<String, Object> getLoginUser(HttpServletRequest request){
-        HashMap<String, Object> result = new HashMap<>();
-        HttpSession session = request.getSession();
-        Member loginUser = (Member) session.getAttribute("loginUser");
-        result.put("loginUser", loginUser);
-
-        List<Follow> followingList = ms.getFollowings( loginUser.getNickname());
-        List<Follow> followerList = ms.getFollowers( loginUser.getNickname());
-        result.put("followings", followingList);
-        result.put("followers", followerList);
-
-        return result;
-    }
 
     @Value("${kakao.client_id}")
     private String client_id;
@@ -140,14 +111,6 @@ public class MemberController {
         response.sendRedirect("http://localhost:3000/kakaosaveinfo");
     }
 
-    @GetMapping("/logout")
-    public HashMap<String, Object> logout(HttpServletRequest request){
-        HashMap<String, Object> result = new HashMap<>();
-        HttpSession session = request.getSession();
-        session.removeAttribute("loginUser");
-        return null;
-    }
-
     @Autowired
     ServletContext context;
 
@@ -196,9 +159,14 @@ public class MemberController {
         return result;
     }
 
+    @Autowired
+    CustomSecurityConfig cc;
+
     @PostMapping("/join")
     public HashMap<String, Object> join(@RequestBody Member member){
         HashMap<String, Object> result = new HashMap<>();
+        PasswordEncoder pe = cc.passwordEncoder();
+        member.setPwd(pe.encode(member.getPwd()));
         ms.insertMember(member);
         result.put("msg", "ok");
         return result;
@@ -217,12 +185,18 @@ public class MemberController {
     }
 
     @GetMapping("/getFollowings")
-    public List<Follow> getFollowings(HttpServletRequest request){
-        HttpSession session = request.getSession();
-        Member member = (Member) session.getAttribute("loginUser");
-        List<Follow> list = ms.getFollowings( member.getNickname());
+    public List<Follow> getFollowings(@RequestParam("nickname") String nickname){
+        List<Follow> list = ms.getFollowings( nickname );
         return list;
     }
+
+    @GetMapping("/getFollowers")
+    public List<Follow> getFollowers(@RequestParam("nickname") String nickname){
+        List<Follow> list = ms.getFollowers( nickname );
+        return list;
+    }
+
+
 
     @PostMapping("/updateProfile")
     public HashMap<String, Object> updateProfile(@RequestBody Member member, HttpServletRequest request){
