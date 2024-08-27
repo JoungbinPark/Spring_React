@@ -1,4 +1,4 @@
-package com.himedia.spServer.dto;
+package com.himedia.spserver.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

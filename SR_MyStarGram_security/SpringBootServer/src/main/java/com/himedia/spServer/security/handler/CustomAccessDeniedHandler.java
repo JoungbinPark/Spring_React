@@ -1,4 +1,4 @@
-package com.himedia.spServer.security.handler;
+package com.himedia.spserver.security.handler;
 
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
@@ -13,7 +13,6 @@ import java.io.PrintWriter;
 import java.util.Map;
 
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
-
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         Gson gson = new Gson();

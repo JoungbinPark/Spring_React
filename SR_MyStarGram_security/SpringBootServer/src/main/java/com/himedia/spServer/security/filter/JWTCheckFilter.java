@@ -1,9 +1,9 @@
-package com.himedia.spServer.security.filter;
+package com.himedia.spserver.security.filter;
 
 import com.google.gson.Gson;
-import com.himedia.spServer.dto.MemberDTO;
-import com.himedia.spServer.security.util.CustomJWTException;
-import com.himedia.spServer.security.util.JWTUtil;
+import com.himedia.spserver.dto.MemberDTO;
+import com.himedia.spserver.security.util.CustomJWTException;
+import com.himedia.spserver.security.util.JWTUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Log4j2
-public class JWTCheckFilter extends OncePerRequestFilter {
+public class JWTCheckFilter extends OncePerRequestFilter  {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -40,18 +40,18 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             String profilemsg = (String) claims.get("intro");
 
             List<String> roleNames = (List<String>) claims.get("roleNames");
-            MemberDTO memberDTO = new MemberDTO(nickname, pwd, email, phone, snsid, provider, profileimg, profilemsg, roleNames);
+            MemberDTO memberDTO = new MemberDTO( nickname, pwd, email, phone, snsid,provider, profileimg, profilemsg, roleNames);
             log.info("-----------------------------------");
             log.info(memberDTO);
             log.info(memberDTO.getAuthorities()); // 권한 추출
 
             UsernamePasswordAuthenticationToken authenticationToken
-                    = new UsernamePasswordAuthenticationToken(memberDTO, pwd, memberDTO.getAuthorities());
+                    = new UsernamePasswordAuthenticationToken(memberDTO, pwd , memberDTO.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
             filterChain.doFilter(request, response);
 
-        } catch (Exception e) {
+        }catch(Exception e){
             log.error("JWT Check Error..............");
             log.error(e.getMessage());
             Gson gson = new Gson();
@@ -60,49 +60,48 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             PrintWriter printWriter = response.getWriter();
             printWriter.println(msg);
             printWriter.close();
-        } catch (CustomJWTException e) {
-            throw new RuntimeException(e);
         }
+
     }
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String path = request.getRequestURI();
-        log.info("check uri........." + path);
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request)
+            throws ServletException {
+        String path = request.getRequestURI();
+        log.info("check uri.............." + path);
         if(request.getMethod().equals("OPTIONS"))
             return true;
-
         if(path.startsWith("/member/loginlocal"))
             return true;
-
         if(path.startsWith("/images/"))
             return true;
-
         if(path.startsWith("/uploads/"))
             return true;
-
         if(path.startsWith("/member/join"))
             return true;
-
         if(path.startsWith("/member/emailcheck"))
             return true;
-
         if(path.startsWith("/member/nicknamecheck"))
             return true;
-
         if(path.startsWith("/member/fileupload"))
             return true;
 
-        if(path.startsWith("/member/getFollowings"))
+        if(path.startsWith("/member/kakaostart"))
             return true;
 
-        if(path.startsWith("/member/getFollowers"))
+        if(path.startsWith("/member/kakaoLogin"))
             return true;
 
-        if(path.startsWith("/post/addReply"))
+        if(path.startsWith("/favicon.ico"))
+            return true;
+
+        if(path.startsWith("/member/refresh"))
             return true;
 
         return false;
     }
+
+
+
 }

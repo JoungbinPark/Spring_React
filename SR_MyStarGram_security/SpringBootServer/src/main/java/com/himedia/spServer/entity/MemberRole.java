@@ -1,4 +1,4 @@
-package com.himedia.spServer.entity;
+package com.himedia.spserver.entity;
 
 public enum MemberRole {
     USER, ADMIN, MANAGER

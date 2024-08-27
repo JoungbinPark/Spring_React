@@ -1,4 +1,4 @@
-package com.himedia.spServer.entity;
+package com.himedia.spserver.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

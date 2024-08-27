@@ -1,4 +1,4 @@
-package com.himedia.spServer.security.util;
+package com.himedia.spserver.security.util;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.InvalidClaimException;
@@ -8,21 +8,21 @@ import io.jsonwebtoken.security.Keys;
 import lombok.extern.log4j.Log4j2;
 
 import javax.crypto.SecretKey;
+import java.sql.Date;
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.Map;
 
 @Log4j2
 public class JWTUtil {
 
+    // 30자리 이상의 키값 String
     private static String key = "1234567890123456789012345678901234567890";
 
-    //30자리 이상의 키값 String
-    public static String generateToken(Map<String, Object> claims, int i ){
+    public static String generateToken(Map<String, Object> claims, int i) {
         SecretKey key = null;
-        try{
+        try {
             key = Keys.hmacShaKeyFor(JWTUtil.key.getBytes("UTF-8"));
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
         String jwtStr = Jwts.builder()
@@ -34,6 +34,7 @@ public class JWTUtil {
                 .compact();
         return jwtStr;
     }
+
 
     public static Map<String, Object> validateToken(String accessToken) throws CustomJWTException {
         Map<String, Object> claim = null;
@@ -55,6 +56,4 @@ public class JWTUtil {
         }
         return claim;
     }
-
-
 }

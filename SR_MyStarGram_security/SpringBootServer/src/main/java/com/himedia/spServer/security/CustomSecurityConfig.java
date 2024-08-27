@@ -1,9 +1,9 @@
-package com.himedia.spServer.security;
+package com.himedia.spserver.security;
 
-import com.himedia.spServer.security.filter.JWTCheckFilter;
-import com.himedia.spServer.security.handler.APILoginFailHandler;
-import com.himedia.spServer.security.handler.APILoginSuccessHandler;
-import com.himedia.spServer.security.handler.CustomAccessDeniedHandler;
+import com.himedia.spserver.security.filter.JWTCheckFilter;
+import com.himedia.spserver.security.handler.APILoginFailHandler;
+import com.himedia.spserver.security.handler.APILoginSuccessHandler;
+import com.himedia.spserver.security.handler.CustomAccessDeniedHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
@@ -34,9 +34,9 @@ public class CustomSecurityConfig {
         // CORS(Cross Origin Resource Sharing)
         // 서버가 다른 곳들끼리 통신을 하고 있는 가운데 그들간의 통신에 제약을 두는 설정
         http.cors(
-                httpSecurityCorsConfigurer->{
-                    httpSecurityCorsConfigurer.configurationSource( corsConfigurationSource() );
-                }
+            httpSecurityCorsConfigurer->{
+                httpSecurityCorsConfigurer.configurationSource( corsConfigurationSource() );
+            }
         );
 
         // CSRF: 리퀘스트 위조방지 설정
@@ -46,11 +46,11 @@ public class CustomSecurityConfig {
 
         // 세션에 상태저장을 하지 않을 환경 설정
         http.sessionManagement(
-                sessionConfig->sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            sessionConfig->sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
         // 로그인 처리 설정
-        http.formLogin(config -> {
+        http.formLogin(config -> {  
             config.loginPage("/member/loginlocal");  // loadUserByUsername 자동호출
             //로그인 성공시 실행할 코드를 갖은 클래스
             config.successHandler(new APILoginSuccessHandler());
@@ -58,14 +58,14 @@ public class CustomSecurityConfig {
             config.failureHandler(new APILoginFailHandler());
         });
 
-         //JWT 엑세스 토큰  체크
-         http.addFilterBefore(new JWTCheckFilter(),
+        // JWT 엑세스 토큰  체크
+        http.addFilterBefore(new JWTCheckFilter(),
                 UsernamePasswordAuthenticationFilter.class);
 
-         //접근시 발생한 예외 처리(엑세스 토큰 오류 , 로그인 오류 등등
-         http.exceptionHandling(config -> {
+        // 접근시 발생한 예외 처리(엑세스 토큰 오류 , 로그인 오류 등등
+        http.exceptionHandling(config -> {
             config.accessDeniedHandler(new CustomAccessDeniedHandler());
-         });
+        });
 
 
         return http.build();
@@ -76,6 +76,8 @@ public class CustomSecurityConfig {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
+
 
 
     // : cross-origin HTTP 요청들을 제한합니다.

@@ -1,18 +1,15 @@
-package com.himedia.spServer.entity;
+package com.himedia.spserver.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 
 @Data
 @Entity
 public class Post {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -20,4 +17,5 @@ public class Post {
     private String writer;
     @CreationTimestamp
     private Timestamp writedate;
+
 }

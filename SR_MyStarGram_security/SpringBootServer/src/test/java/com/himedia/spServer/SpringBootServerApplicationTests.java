@@ -1,7 +1,6 @@
-package com.himedia.spServer;
+package com.himedia.spserver;
 
-import com.himedia.spServer.security.CustomSecurityConfig;
-import jakarta.xml.bind.SchemaOutputResolver;
+import com.himedia.spserver.security.CustomSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,8 +15,7 @@ class SpringBootServerApplicationTests {
     @Test
     void contextLoads() {
         PasswordEncoder pe = cc.passwordEncoder();
-        System.out.println("비밀번호를 바꾸자");
-        System.out.println(pe.encode("a"));
+        System.out.println(pe.encode("1234"));
     }
 
 }

@@ -1,4 +1,4 @@
-package com.himedia.spServer;
+package com.himedia.spserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
